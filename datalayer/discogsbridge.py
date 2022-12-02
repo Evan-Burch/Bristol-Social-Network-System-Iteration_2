@@ -17,8 +17,8 @@ class DiscogsBridge(object):
 
     @dispatch()
     def __init__(self):
-        key = "YOUR KEY"
-        secret = "YOUR SECRET"
+        key = "LTUrViVMRJpwBYKtqLxS"
+        secret = "cnGDYbzPUVaBSHjeCIQupRYxkrLCHPOj"
         self.__temp_collaborators: list[dict] = []
 
         self.__dc: discogs_client.Client = discogs_client.Client(
@@ -35,7 +35,19 @@ class DiscogsBridge(object):
         :return: dictionary with artist info
         :raises: ArtistNotFound if the artist is not found in Discogs
         """
-        pass
+        try:
+            artist = self.__dc.artist(aid)
+            artistID = artist.id
+            artistName = artist.name
+            realname = artist.real_name if artist.real_name is not None else artist.name
+            profile = artist.profile
+            level = 0
+            dictionary: dict = {"artistID": artistID, "artistName": artistName, "realname": realname,
+                                "profile": profile, "level": level}
+        except ArtistNotFound:
+            raise ArtistNotFound
+
+        return dictionary
 
     def get_artists_from_list(self, a_list: list[int], year: int = 1935) -> list[dict]:
         """
